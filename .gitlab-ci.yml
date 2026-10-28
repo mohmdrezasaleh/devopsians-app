@@ -1,0 +1,7 @@
+stages: [test]
+
+hello:
+  stage: test
+  script:
+    - echo "runner works"
+    - docker info | head -5
