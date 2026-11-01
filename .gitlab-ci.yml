@@ -2,9 +2,9 @@ stages: [test, build, scan, deploy]
 
 variables:
   IMAGE: $CI_REGISTRY_IMAGE
-  PIP_INDEX_URL: "https://mirror-pypi.runflare.com/simple/"
-  PIP_DEFAULT_TIMEOUT: "60"
-  PIP_RETRIES: "5"
+  PIP_INDEX_URL:  "https://pypi.org/simple/" 
+  PIP_DEFAULT_TIMEOUT: "120"
+  PIP_RETRIES: "10"
 
 test:
   stage: test
