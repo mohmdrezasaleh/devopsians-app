@@ -21,3 +21,8 @@ def test_visit():
     main.database.incr.return_value = 7
     r = client.post("/visit")
     assert r.json() == {"visits": 7}
+
+def test_metrics():
+    r = client.get("/metrics")
+    assert r.status_code == 200
+    assert "http_request" in r.text
