@@ -38,7 +38,9 @@ build:
 
 update-gitops:
   stage: deploy
-  image: alpine/git:latest
+  image: 
+    name: alpine/git:latest
+    entrypoint: [""]
   variables:
     GIT_SSL_NO_VERIFY: "true"
   script:
