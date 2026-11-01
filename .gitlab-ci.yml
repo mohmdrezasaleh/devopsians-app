@@ -46,8 +46,10 @@ update-gitops:
     - git config --global user.name "GitLab CI"
     - git clone "https://oauth2:${GITOPS_TOKEN}@195.24.237.134/devops/devopsians-gitops.git" gitops
     - cd gitops
-    - sed -i "s|^\(\s*tag:\s*\).*|\1\"${CI_COMMIT_SHORT_SHA}\"|" apps/devopsians-workload/values-prod.yaml
+    - |
+      sed -i "s|^\(\s*tag:\s*\).*|\1\"${CI_COMMIT_SHORT_SHA}\"|" apps/devopsians-workload/values-prod.yaml
     - git diff --stat
-    - git commit -am "ci: update image tag to ${CI_COMMIT_SHORT_SHA} [skip ci]"
+    - |
+      git commit -am "ci(image): update tag to ${CI_COMMIT_SHORT_SHA} [skip ci]"
     - git push origin main
   only: [main]
