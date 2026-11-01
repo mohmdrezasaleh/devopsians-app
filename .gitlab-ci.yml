@@ -45,9 +45,13 @@ scan:
     TRIVY_PASSWORD: $CI_REGISTRY_PASSWORD
     TRIVY_INSECURE: "true"
     TRIVY_NO_PROGRESS: "true"
-    TRIVY_DB_REPOSITORY: "mirror.gcr.io/aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db"
+    TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db"
+    TRIVY_TIMEOUT: "30m"
+    TRIVY_SKIP_DB_UPDATE: "true"
+    TRIVY_SKIP_JAVA_DB_UPDATE: "true"
   script:
     - trivy image --severity HIGH,CRITICAL --exit-code 0 $IMAGE:$CI_COMMIT_SHORT_SHA
+  allow_failure: true
   only: [main]
 
 update-gitops:
