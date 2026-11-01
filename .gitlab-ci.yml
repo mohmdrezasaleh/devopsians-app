@@ -1,4 +1,4 @@
-stages: [test, build, deploy]
+stages: [test, build, scan, deploy]
 
 variables:
   IMAGE: $CI_REGISTRY_IMAGE
@@ -35,6 +35,20 @@ build:
     - docker push $IMAGE:latest
   only: [main]
 
+scan:
+  stage: scan
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  variables:
+    TRIVY_USERNAME: $CI_REGISTRY_USER
+    TRIVY_PASSWORD: $CI_REGISTRY_PASSWORD
+    TRIVY_INSECURE: "true"
+    TRIVY_NO_PROGRESS: "true"
+    TRIVY_DB_REPOSITORY: "mirror.gcr.io/aquasec/trivy-db,ghcr.io/aquasecurity/trivy-db"
+  script:
+    - trivy image --severity HIGH,CRITICAL --exit-code 0 $IMAGE:$CI_COMMIT_SHORT_SHA
+  only: [main]
 
 update-gitops:
   stage: deploy
