@@ -1,4 +1,4 @@
-stages: [test, build]
+stages: [test, build, deploy]
 
 variables:
   IMAGE: $CI_REGISTRY_IMAGE
@@ -33,4 +33,21 @@ build:
       -t $IMAGE:latest .
     - docker push $IMAGE:$CI_COMMIT_SHORT_SHA
     - docker push $IMAGE:latest
+  only: [main]
+
+
+update-gitops:
+  stage: deploy
+  image: alpine/git:latest
+  variables:
+    GIT_SSL_NO_VERIFY: "true"
+  script:
+    - git config --global user.email "ci@devopsians.local"
+    - git config --global user.name "GitLab CI"
+    - git clone "https://oauth2:${GITOPS_TOKEN}@195.24.237.134/devops/devopsians-gitops.git" gitops
+    - cd gitops
+    - sed -i "s|^\(\s*tag:\s*\).*|\1\"${CI_COMMIT_SHORT_SHA}\"|" apps/devopsians-workload/values-prod.yaml
+    - git diff --stat
+    - git commit -am "ci: update image tag to ${CI_COMMIT_SHORT_SHA} [skip ci]"
+    - git push origin main
   only: [main]

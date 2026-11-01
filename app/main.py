@@ -21,6 +21,7 @@ async def status():
         "hostname": platform.node(),
         "cpu_percent": psutil.cpu_percent(),
         "ram_percent": psutil.virtual_memory().percent,
+        "version": "v2"
     }
 
 
