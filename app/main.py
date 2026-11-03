@@ -51,3 +51,7 @@ async def status():
 @app.post("/visit")
 async def visit():
     return {"visits": database.incr("visits")}
+
+@app.get("/error")
+async def error():
+    raise RuntimeError("intentional error for alert demo")
