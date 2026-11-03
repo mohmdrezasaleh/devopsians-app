@@ -4,5 +4,5 @@ pydantic==2.14.1
 redis==8.1.0
 starlette==1.7.0
 uvicorn==0.54.0
-prometheus-fastapi-instrumentator
-prometheus-client
+prometheus-fastapi-instrumentator==8.1.0
+prometheus_client==0.26.0
