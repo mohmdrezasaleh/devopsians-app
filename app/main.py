@@ -4,7 +4,8 @@ import platform
 import psutil
 import redis
 from fastapi import FastAPI
-from prometheus_client import Counter
+from prometheus_client import REGISTRY
+from prometheus_client.core import CounterMetricFamily
 from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
@@ -16,7 +17,23 @@ database = redis.Redis(
     decode_responses=True,
 )
 
-VISITS = Counter("app_page_visits_total", "Total page visits recorded in Redis")
+
+class RedisVisitsCollector:
+    """Exposes the visit counter stored in Redis as a Prometheus counter."""
+
+    def collect(self):
+        try:
+            value = int(database.get("visits") or 0)
+        except redis.RedisError:
+            return
+        yield CounterMetricFamily(
+            "app_page_visits",
+            "Total page visits stored in Redis",
+            value=value,
+        )
+
+
+REGISTRY.register(RedisVisitsCollector())
 
 Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 
@@ -33,5 +50,4 @@ async def status():
 
 @app.post("/visit")
 async def visit():
-    VISITS.inc()
     return {"visits": database.incr("visits")}
